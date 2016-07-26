@@ -1,0 +1,802 @@
+#===============================================================================
+#      Arquivo ~/.bashrc
+#
+#      Descrição : Arquivo pessoal de configuração do bash, contruido sobre o
+#                  o sistema Kurumin 5 (GNU/Linux) 
+#      Usuário   : J. F. Mitre
+#      Versão    : 20/10/2005
+#      Fonte     : https://www.vivaolinux.com.br/etc/.bashrc-mitre/	 		
+#===============================================================================
+ 
+#===============================================================================
+# Definindo as propriedades visuais do xterm                                  
+#===============================================================================
+# O arquivo ~/.xtermcontrol é carregado na hora da execução desse programa
+# Caso o programa xtermcontrol não exista, é configurado um alias para o xterm    
+#-------------------------------------------------------------------------------
+  case $TERM in
+   xterm*) [ -f /usr/bin/xtermcontrol ] &&  { xtermcontrol ; } || {
+           alias xterm='xterm -ls -bg black -fg white -rightbar' ; } ;; *);;
+  esac        
+
+#===============================================================================
+# Definindo o $USERNAME                                                        
+#===============================================================================
+# Essa variável, sabe-se lá por que, não existe no kurumin                     
+#-------------------------------------------------------------------------------
+  [ -z "$USERNAME" ] && { [ ! -r /etc/passwd ] && { export USERNAME=$USER;} || {
+  export USERNAME=$(cat /etc/passwd |grep $USER| cut -f5 -d :) ;} ; }
+
+#===============================================================================
+# Configurando PATH e Programas externos                                                
+#-------------------------------------------------------------------------------
+# Configurações de variáveis em geral
+#-------------------------------------------------------------------------------
+  [ -d /home/dvdram ] && { [ ! -z "$(grep '/home/dvdram' /etc/fstab )" ] && {
+   export DVDRW=/home/dvdram ; } ; }  # Ponto de montagem do DVD-/+RW 
+     
+  [ -d /home/cdrom ] && { [ ! -z "$(grep '/home/cdrom' /etc/fstab )" ] && {
+   export CDROM=/home/cdrom ; } ; }  # Montagem do DVD-ROM
+  
+  [ -d /usr/share/qt3 ] && { export QTDIR=/usr/share/qt3; } # Define o QT3
+  [ -d ~/doc ] && { export DOC=~/doc ;}       # Diretório de documentos
+  [ -d ~/bin ] && { export BIN=~/bin ;}       # Diretório de binários pessoais
+  [ -d /mnt/iso ] && { export MISO=/mnt/iso ;}  # Montagem de imagens iso
+  [ -f /usr/bin/vim ] && { export EDITOR=/usr/bin/vim ;}   # Editor default
+  [ -f /usr/bin/kate ] && { export XEDITOR=/usr/bin/kate ;} # Editor gráfico 
+  [ -d ~/.lixo ] && { export TRASH=~/.lixo ; }   # Lixeira do shell
+  [ -d /usr/bin/less ] && { export PAGER=less; }   # Definindo o paginador padrão
+  [ -d ~/doc/System/Incoming ] && { MDIR=~/doc/System/Incoming ;} # *Mule dir
+  [ -x /usr/bin/kghostview ] && { export PDF=/usr/bin/kghostview;} # leitor padrão
+  [ -x /usr/bin/lynx ] && { export BROWSER=/usr/bin/lynx ;} # Browser de texto
+  export DRIVE=/dev/hda        # HD instalado (não é a partição)
+  export SUSER=root            # Usuário root do sistema
+  export NULL=/dev/null        # Saída nula do sistema
+
+#-------------------------------------------------------------------------------
+# Configuração de software e scripts externos
+#-------------------------------------------------------------------------------  
+# Diretório de executáveis de usuário (recomendado)
+  [ ! -z "$BIN" ] && { PATH=./:$BIN:"${PATH}"; }
+
+# MANPATH do usuário
+  [ -d ~/.man ] && { MANPATH=~/.man:"${MANPATH}"; }
+
+# Declaração do JAVA
+  [ -d /usr/lib/java ] && { JAVA_HOME=/usr/lib/java; } 
+  [ ! -z $JAVA_HOME ] && { PATH=$JAVA_HOME:"${PATH}"; }
+  
+# Aciona o "Bash Completion"
+  [ -f /etc/bash_completion ] && source /etc/bash_completion
+
+# Declaração do iFort e do debug
+  [ -d /opt/intel_fc_80/ ] && source /opt/intel_fc_80/bin/ifortvars.sh
+  [ -d /opt/intel_idb_73/ ] && source /opt/intel_idb_73/bin/idbvars.sh
+
+# Declaração das funçõeszz
+  [ -f $BIN/funcoeszz ] && { FUNCOESZZ=$BIN/funcoeszz ; } 
+  [ ! -z "$FUNCOESZZ" ] && { . $FUNCOESZZ; export ZZPATH=$FUNCOESZZ; }
+
+# Declaração do OpenCASCADE
+  [ -d /opt/OpenCASCADE ] &&  export CASROOT=/opt/OpenCASCADE/ros
+  [ ! -z $CASROOT ] && { source $CASROOT/env.sh; }
+
+# Declaração do Scilab
+  [ -d /opt/scilab ] && SCILAB=/opt/scilab/
+  [ ! -z $SCILAB ] &&  { PATH=$SCILAB/bin:"${PATH}"; }
+   
+# Declaração de variáveis definidas sobre paths
+  export PATH                  # Exporta o PATH 
+  export MANPATH               # Exporta o MANPATH
+  export JAVA_HOME             # Exporta JAVA_HOME
+  
+# Definindo cores amigáveis para o Midnight-Commander
+  [ ! -z "$(mc --help |grep "Midnight Commander")" ] && {
+   MC_COLOR_TABLE=:normal=gray,default
+   MC_COLOR_TABLE=:$MC_COLOR_TABLE:markselect=brightred,yellow
+   MC_COLOR_TABLE=:$MC_COLOR_TABLE:marked=brightred,default
+   MC_COLOR_TABLE=:$MC_COLOR_TABLE:directory=brightblue,default
+   MC_COLOR_TABLE=:$MC_COLOR_TABLE:executable=brightgreen,default
+   MC_COLOR_TABLE=:$MC_COLOR_TABLE:link=default,default
+   export MC_COLOR_TABLE ; } 
+
+# Configurando o OpenFOAM
+  [ -d $HOME/OpenFOAM/OpenFOAM-1.2/ ] && {    
+   alias openfoam='. $HOME/OpenFOAM/OpenFOAM-1.2/.OpenFOAM-1.2/bashrc' ; }
+    
+#===============================================================================
+# Definindo cores                                                             
+#===============================================================================
+
+# Definição das cores para uso geral (incluindo scripts externos)
+# Para uso em script externo, use o echo com a opção -e (echo -e ... )
+# A opção -n no echo é opcional, porém recomendada.
+
+  export NORMAL="\\033[0m"
+
+# Cores sem negrito
+  export cinza="\\033[30m"
+  export vermelho="\\033[31m"
+  export verde="\\033[32m"
+  export amarelo="\\033[33m"
+  export azul="\\033[34m"
+  export roxo="\\033[35m"
+  export ciano="\\033[36m"
+  export branco="\\033[37m"
+    
+# Cores em negrito  
+  export CINZA="\\033[30;1m"
+  export VERMELHO="\\033[31;1m"
+  export VERDE="\\033[32;1m"
+  export AMARELO="\\033[33;1m"
+  export AZUL="\\033[34;1m"
+  export ROXO="\\033[35;1m"
+  export CIANO="\\033[36;1m"
+  export BRANCO="\\033[37;1m"
+  
+#===============================================================================
+# Configuração do Prompt                                                      
+#===============================================================================
+#      
+#   Multiplas configuração para o PS1
+#   Pode-se testar uma a uma usando os comandos representados pelas funções
+#
+#   Por que usar funções e não alias ?
+#    A bem da verdade, originalmente tinha escrito as diversas PS1 como alias
+#    porém quando eu fui fazer o mesmo para o PROMPT_COMMAND tive grandes
+#    dificuldades de programar dentro do PROMPT_COMMAND usando alias, logo
+#    para contornar esse problema usei uma função, bem, alias são dispensáveis
+#    mas muito mais simples que funções, entretanto funções fornecem maior número
+#    de alternativas e poder de programação, para homogeinizar tudo, tanto a PS1
+#    quanto o PROMPT_COMMAND serão descritos por função.
+#
+#   Resume das opções possíveis
+#               \a     an ASCII bell character (07) - Faz barulho
+#               \d     Data no formatothe "Semana Mês Dia" (e.g., "Tue May 26")
+#               \e     o caracter ASCII para o ESC (033) : é o mesmo que \\033
+#               \h     o hostname até o primeiro `.' 
+#               \H     o hostname
+#               \j     the  number of jobs currently managed by the shell
+#               \l     the basename of the shell's terminal  device name
+#               \n     nova linha
+#               \r     carriage return
+#               \s     the  name  of the shell, the basename of $0
+#                      (the portion following the final slash)
+#               \t     A hora no formato 24-hour HH:MM:SS
+#               \T     A hora no formato 12-hour HH:MM:SS
+#               \@     A hora no formato 12-hour HH:MM am/pm
+#               \u     o username do usuário corrente
+#               \v     A versão do bash (e.g., 2.00)
+#               \V     O release do bash, version + patchlevel (e.g., 2.00.0)
+#               \w     O diretório corrente de trabalho
+#               \W     O nome base do diretório corrente
+#               \!     número de comandos no histórico
+#               \#     número do comando executado no shell corrente
+#               \$     se o UID é 0 (ou seja, poder de root) exibe #, senão $
+#               \nnn   the  character  corresponding  to  the octal number nnn
+#               \\     a backslash
+#               \[     O inicio de uma seqüência de caracteres não imprimíveis
+#                      deve ser usado quando expresso sequencias de comandos 
+#                      que por exemplo envolvem códigos ASCII
+#               \]     final da seqüência de caracteres não impriméveis
+#===============================================================================  
+# Review dos alias para ps1
+# 
+# ps1-basic : PS1 original tipo usuario@meuhost:~$
+# ps1-users : cor amarela, com apenas o nome diretório de trabalho exibido
+# ps1-add01 : cor verde, com apenas o nome diretório de trabalho exibido 
+#             (identico ao anterior)
+# ps1-add02 : PS1 tipo usuario:/usr/local/bin/$ com cor verde
+# ps1-add03 : ver é a melhor descrição, as cores é que fazem o show
+# ps1-add04 : ver é a melhor descrição, mas é muito parecido com o ps1-add03
+# ps1-add05 : não exibe o usuário corrente, apenas diretório e hostame
+# ps1-add06 : exibe apenas o nome do diretório corrente
+# ps1-add07 : exibe username em vermelhor e nome de diretório corrente em 
+#             branco
+# ps1-add08 : muito parecido com o anterior, mas com uma | em verde dividindo 
+#             sessões
+# ps1-add09 : parecido com o ps1-users, mas exibe a hora corrente primeiro
+# ps1-add10 : exibe primeiro o número da linha no shell e a data, depois com 
+#             configurações usuais, bem colorido
+# ps1-add11 : identico ao anterior, porém ainda mais colorido
+# ps1-add12 : idêntico ao anterior, mas exibindo hora no lugar da data
+# ps1-add13 : número da linha do shell, seguido da hora no formate am/pm mais
+#             informações adicionais
+# ps1-add14 : extamente como o ps1-add06, porém em amarelo
+# ps1-add15 : esse exibe informação demais até, bonito, mas pouco prático
+#             em ordem: número de linhas do shel, número de comandos no histórico, 
+#             hora, data, usuário hostname, diretório corrente (caminho completo), 
+#             numero de arquivos (apenas arquivos, não conta os diretórios) e 
+#             tamanho total ocupado pelos arquivos no diretório corrente.
+#             Depois de tudo isso ele pula uma linha e exibe um prompt tipo %
+#             Além de ser extremamente colorido. 
+# ps1-add16 : Exibe as mesmas informações de ps1-add15 com um melhor layout 
+#===============================================================================
+  ps1-basic() { export PS1="\u@\h:\w\$ \[$NORMAL\]" ;}
+  ps1-users() { export PS1="\[$AMARELO\]\u@\h:\W\$ \[$NORMAL\]" ;} 
+  ps1-add01() { export PS1="\[$VERDE\]\u@\h:\W\$ \[$NORMAL\]" ;}
+  ps1-add02() { export PS1="\[$VERDE\]\u:\w > \[$NORMAL\]" ;} 
+  ps1-add03() { export PS1="\[$VERMELHO\][\[$VERDE\]\u\[$VERMELHO\]]\[$VERDE\]\W > \[$NORMAL\]" ;} 
+  ps1-add04() { export PS1="\[$VERMELHO\][\[$CIANO\]\u\[$VERMELHO\]]\[$CIANO\]\w > \[$NORMAL\]" ;} 
+  ps1-add05() { export PS1="\[$NORMAL\]\w@\h \[$NORMAL\]" ;} 
+  ps1-add06() { export PS1="\[$NORMAL\]\W: \[$NORMAL\]" ;} 
+  ps1-add07() { export PS1="\[$VERMELHO\]\u\[$BRANCO\] \W \[$VERMELHO\]\$ \[$NORMAL\]" ;}
+  ps1-add08() { export PS1="\[$AMARELO\]\u\[$VERDE\] |\[$BRANCO\] \W \[$CIANO\]\$ \[$NORMAL\]" ;} 
+  ps1-add09() { export PS1="\[$AMARELO\]\t::\u@\h:\W\$ \[$NORMAL\]" ;}
+  ps1-add10() { export PS1="\[$VERMELHO\][\#]\[$BRANCO\][\d]\[$VERDE\]\u@\h:\W\$ \[$NORMAL\]" ;} 
+  ps1-add11() { export PS1="\[$VERMELHO\][\#]\[$BRANCO\][\d]\[$VERDE\]\u@\h:\[$AMARELO\]\W\[$VERDE\]\$ \[$NORMAL\]" ;} 
+  ps1-add12() { export PS1="\[$VERMELHO\][\#]\[$BRANCO\][\t]\[$VERDE\]\u@\h:\[$AMARELO\]\W\[$VERDE\]\$ \[$NORMAL\]" ;} 
+  ps1-add13() { export PS1="\[$BRANCO\][\#][ \@]\[$VERDE\]\u@\h:\W\$ \[$NORMAL\]" ;}
+  ps1-add14() { export PS1="\[$amarelo\]\W: \[$NORMAL\]" ;} 
+  ps1-add15() { export PS1="\[$VERMELHO\][\# /\!] \[$VERDE\][\t]\[$CIANO\][\d]\
+\[$AMARELO\]::\[$branco\]\u\[$AMARELO\]@\[$branco\]\h \[$AMARELO\]::\[$AMARELO\]\
+\w \[$BRANCO\](\[$amarelo\]\$(ls -l | grep \"^-\" | wc -l | tr -d \" \")\[$BRANCO\]\
+arquivo(s), \[$amarelo\]\$(ls --si -s | head -1 ) \[$branco\])\n\[$BRANCO\]%\[$NORMAL\]" ;}
+  ps1-add16() { export PS1="\[$VERMELHO\][\#/\!] \[$VERDE\][\t]\[$CIANO\][\d]\
+\[$AMARELO\]::\[$amarelo\]\$(ls -l | grep \"^-\" | wc -l | tr -d \" \")\[$BRANCO\]\
+arquivo(s), \[$amarelo\]\$(ls --si -s | head -1 )\n\[$branco\]\u\[$AMARELO\]@\
+\[$branco\]\h \[$AMARELO\]::\[$AMARELO\]\w \[$BRANCO\]\n\[$BRANCO\]%\[$NORMAL\]" ;}
+    
+
+  # Define o padrão utilizado da Variável PS1 para o usuário corrente
+  # Isso é feito para diferenciar entre usuários, tipo
+  # É necessário que caracterizar todos os usuários, por definiçã ou por execlusão, 
+  # do contrário será utilizado o prompt default, ps1-base 
+  [ root != $(whoami) ] && { ps1-users; } || { ps1-add01 ;}
+  [ -z "$PS1" ] && ps1-basic
+                       
+#===============================================================================
+# Configuração da Barra de título do xterm
+#===============================================================================
+#
+# Multiplas configuração para o PROMPT_COMMAND
+# Pode-se testar uma a uma usando os comandos representados pelas funções
+#
+# São usadas funções, pois é muito mais fácil de programa-las, como mencionado.
+# O bom uso do PROMPT_COMMAND pode reder ótimos feedbacks de comandos e outras
+# informações.
+#
+# A princípio, qualquer informação que possa ser obtida via echo, pode ser
+# atribuida para o PROMP_COMMAND, cria-se da seguinte forma: 
+# PROMPT_COMMAND='echo -ne "\033]0;{Aqui entra seus comandos ou texto simples}\007"'
+#
+# O comando atribuído ao echo -ne do PROMPT_COMMAND é executado todas as vezes que 
+# o ENTER é clicado na tela, por exemplo, abaixo temos o "prompt-time" ele exibe
+# a hora e a data na barra de título do console, porém apenas atualiza essa 
+# informação com o clique no ENTER o que significa que uma janela aberta porém não
+# usada com essa definição de PROMPT_COMMAND não exibirá as informações correntes,
+# entretanto parece ser uma forma bem interessante de exibir a hora.
+#
+   
+   case $TERM in
+    xterm*)
+     prompt-def() { PROMPT_COMMAND='echo -ne "\033]0;$USER@$HOSTNAME: ${PWD}\007"' ;}
+     prompt-users() { PROMPT_COMMAND='echo -ne "\033]0;$( ls -Al|sed "1d"| wc -l ) Itens\
+ - $( ls -Alh| grep -m 1 total| sed "s/total//" ): ${PWD}\007"' ; } 
+     prompt-time() { PROMPT_COMMAND='echo -ne "\033]0;$(date +%H:%M-%d/%m/%y)\007"'  ;}
+     
+     prompt-users # PROMPT_COMMAND default
+     ;;
+      
+    *) ;;
+   esac
+  
+#===============================================================================
+# Configurações do comportamento do bash
+#===============================================================================
+ 
+# Checa o tamanho da janela entre cada comando e se necessário,
+# atualiza o valor das linhas e colunas.
+  shopt -s checkwinsize
+
+# Evita histórico com linhas duplicadas
+  export HISTCONTROL=ignoredups
+
+#===============================================================================
+#  Funções Galileu (coletânea de funções de objetivos gerais)
+#===============================================================================
+# Declaração de alias e funções do sistema                                             
+#===============================================================================
+# Alternativa para o uso do sudo. (necessita senha de $SUSER)
+#------------------------------------------------------------------------------- 
+# Aplicativos como outro user em modo gráfico ou como $SUSER em modo texto
+#-------------------------------------------------------------------------------
+# alias sudo='Sudo'   # Altenativa para que não usa o sudo para comando algum
+# alias Sudo='sudo'   # Alternativa para quem usa o sudo para tudo
+# A Função Sudo, desnecessário se sudo estive habilitado a todos os comandos
+  Sudo(){ su -c "$*" $SUSER; } 
+#-------------------------------------------------------------------------------
+  [ -x /usr/bin/kdesu ] && { alias kdesu='kdesu -n' ; }  # Protege senha no uso
+  Kdesu(){ [ -x /usr/bin/kdesu ] && { kdesu -n -u $SUSER $* 2>$NULL; } ;}
+#===============================================================================
+# Atalhos de comandos de comando simples
+#-------------------------------------------------------------------------------
+  alias clc='clear'           # Limpar a tela (adapta Matlab)
+  alias cls='clear'           # Limpar a tela (adapta DOS)
+  alias l='ls -F'             # Listar arquivos identificando tipo
+  alias rm='rm'               # Removendo arquivos
+  alias rmr='rm -r'           # Removendo arquivos e diretórios
+  alias rmf='rm -rf'          # Removendo arquivos sem perguntas
+  alias cp='cp -r'            # Cópia recursiva
+  alias cpv='cp -Rv'          # Cópia recursiva com verbose
+  alias md='mkdir -p'         # Cria diretórios e subdiretórios 
+  alias df='df -h'            # Espaço em disco com unidades mensuráveis
+  alias psa='ps aux'          # Lista tarefas correntes de todos os usuários
+  alias psas='ps aux| grep'   # Procura na lista tarefas correntes
+  alias kill='kill -9'        # kill de verdade
+  alias img='kuickshow'       # Visualizador de imagens
+  alias kate='erro kate'      # Redireciona a saída de erro do kate
+  
+#===============================================================================  
+# Alias desligar a máquina, requer sudo
+#-------------------------------------------------------------------------------
+  alias shutdown='sudo shutdown'        # Usar o shutdown (sudo ativado)
+  alias desligar='shutdown -h now'      # Desligar a máquina
+  alias reiniciar='shutdown -r now'     # Reiniciar a máquina
+  
+#===============================================================================  
+# Alias para o apt-get
+#-------------------------------------------------------------------------------
+  alias apt-get='Sudo apt-get -u'        # apt-get mostra pacotes atualizáveis
+  alias apt-update='apt-get update'      # update no apt-get
+  alias apt-upgrade='apt-get upgrade'    # upgrade no sistema
+  alias apt-version='apt-get upgrade -V' # Exibe versão na atualização
+  
+#===============================================================================  
+# Alias para conectar a internet
+#-------------------------------------------------------------------------------
+  alias rede='sudo pump'                 # Ativa a rede (sudo ativado)
+  alias kppp-ig='sudo kppp -c IG'        # Usa o IG (conexão discada)
+  alias kppp-oro='sudo kppp -c OROLIX'   # Usa o OROLIX (conexão discada)
+  alias kppp-down='sudo kppp -k'         # Desliga o kppp
+
+#===============================================================================
+# Alias para ajuste e mantuenção da hora/data
+#-------------------------------------------------------------------------------
+  alias hora='date +%H:%M:%S'                           # Exibe a hora
+  alias data='date +%H:%M:%S'                           # Exibe a data
+  alias config-data='sudo ntpdate -u -b ntp.usp.br'     # ajusta data pela rede
+# alias config-data='sudo ntpdate -u -b ntp1.ptb.de'    # mirror auxiliar
+# alias config-data='ntpdate -u -b bonehed.lcs.mit.edu' # mirror auxiliar
+
+#===============================================================================
+# Alias para movimentaçoes em caminhos
+#-------------------------------------------------------------------------------
+  [ -z $CDROM ] || { alias cdrom="cd $CDROM"  ;}  # Ponto de montagem do CD
+  [ -z $DVDRW ] || { alias dvdram="cd $DVDRW" ;}  # Ponto de montagem do DVD
+  [ -z $DOC ] || { alias doc="cd $DOC" ; }        # Segunda partição
+  [ -z $MDIR ] || { alias mule='cd $MDIR && ls';} # Arquivos do completos aMule
+  alias ..='cd ..'           # Um diretório acima
+  alias ...='cd ../../'      # Dois diretórios acima
+  alias ~='cd'             # Pasta home do usuário
+        
+#===============================================================================  
+# Alias que utilizam as Funções ZZ
+#-------------------------------------------------------------------------------
+  [ ! -z "$FUNCOESZZ" ] && {
+   alias zar='zzarrumanome -d *'        # Renomeia todos os arquivos e diretórios
+   alias zar+='zzarrumanome -d -r *'    # Renomeia todos as pastas recursivamente
+  } # Cria os alias apenas se existir as funções ZZ 
+
+#===============================================================================  
+# Alias/Funções de montagem e desmontagem de unidades de CD/DVD
+#-------------------------------------------------------------------------------  
+  [ ! -z $CDROM ] && {  # Montagem do DVD-ROM
+   alias cd+='mount /dev/cdrom && cd $CDROM && ls'      # Monta o CD
+   alias cd-='cd ~ && fumount /dev/cdrom'               # Desmonta o CD   
+   alias ecd+='cd- ; eject /dev/cdrom'                  # Ejeta o CD
+   alias ecd-='eject -t /dev/cdrom'                     # Retrai o CD 
+  }  || { alias cd+='echo "Erro no com o ponto de montagem"; 
+   echo "Verifique o ~/.bashrc e cheque sua configuração com o /etc/fstab"'
+   alias cd-='cd+'; alias ecd+='cd+'; alias ecd-='cd+';  }
+   
+#-------------------------------------------------------------------------------  
+  [ ! -z $DVDRW ] && {  # Montagem do DVD-/+RW
+   alias dvd+='mount /dev/cdrom1 && cd $DVDRW && ls'    # Monta o DVD
+   alias dvd-='cd ~ && fumount /dev/cdrom1'             # Desmonta o DVD
+   alias edvd+='dvd- ; eject /dev/cdrom1'               # Ejeta o DVD
+   alias edvd-='eject -t /dev/cdrom1'                   # Retrai o DVD
+  } || { alias dvd+='echo "Erro no com o ponto de montagem"; 
+   echo "Verifique o ~/.bashrc e cheque sua configuração com o /etc/fstab"'
+   alias dvd-='dvd+'; alias edvd+='dvd+'; alias edvd-='dvd+';  }
+   
+#-------------------------------------------------------------------------------  
+# Desmontar unidades montadas na MARRA
+#-------------------------------------------------------------------------------
+# Não use essa função em disquestes, pois caso não desmonte normalmente haverá
+# perda de dados.
+#------------------------------------------------------------------------------- 
+  fumount(){ [ $# == 1  ] && { [ ! -z "$(grep "$1" /etc/mtab)" ] &&  { 
+   umount "$1" &>$NULL ;} || { echo "$1 não está montado" ; } 
+   [ ! -z "$(grep "$1" /etc/mtab)" ] && { 
+   fuser -k "$1" &>$NULL; umount "$1" &>$NULL; } || { echo -n; } ;} || {
+   { echo "Especifique o dispositivo montado";} ;} ;}
+   
+#===============================================================================  
+# Aplicativo multimidia
+#-------------------------------------------------------------------------------
+# Player de mp3
+#-------------------------------------------------------------------------------
+  [ -x /usr/bin/mpg321 ] && {
+   alias m3='mpg123'              # Alias para o mpg123 de forma rápida       
+   alias ml3='mpg123 --list' ; }  # Faz mpg123 reconhecer listas de mp3   
+   
+#-------------------------------------------------------------------------------
+# Ripar CDs
+#-------------------------------------------------------------------------------
+  [ -x /usr/bin/cdparanoia ] && { alias ripcd='cdparanoia -B'; } 
+  
+#-------------------------------------------------------------------------------
+# Conversor entre formatos de arquivos (wav --> mp3
+#-------------------------------------------------------------------------------
+  [ -x /usr/bin/lame ] && { alias wav2mp3='lame -b 160'; } 
+  
+#===============================================================================
+# Definindo alias para o pager padrão
+#-------------------------------------------------------------------------------    
+  [ ! -z "${PAGER}" ] && { alias p='${PAGER}' ; }  # Páginador padrão
+  
+#===============================================================================    
+# Configurações múltiplas de emacs
+#-------------------------------------------------------------------------------
+# Não é óbvio ter o emacs de terminal e gráfico instalados juntos no debian
+#-------------------------------------------------------------------------------
+  [ -x /usr/bin/emacs21 ] && { alias xemacs='erro emacs21'; } # Emacs gráfico
+  [ -x /usr/bin/em*-nox ] && { alias emacst='emacs21-nox';} # Emacs de terminal
+ 
+#===============================================================================
+# Usos para apt-cache
+#-------------------------------------------------------------------------------
+  [ -x /usr/bin/apt-cache ] && { alias search='apt-cache search' 
+   alias show='apt-cache show'; } || { alias show='apt-cache não instalado'
+   alias search='echo "Sugiro que instale o apt-cache, é muito útil!"
+   echo "Sem ele não, pesquisar por: "'; } # Busca por pacotes no Debian
+   
+#===============================================================================
+# Alias/Função para monitorar temperatura no sistema
+#-------------------------------------------------------------------------------    
+  [ -x /usr/bin/sensors ] && { # Sensores de temperatura
+   alias cputemp='sensors| grep "CPU"| cut -b -20' # Temp da CPU
+   alias systemp='sensors| grep "Sys"| cut -b -20' # Temp do Gabinete
+   temperaturas() { # Monitor de temperatudas, resultado geral
+     sensors| grep "CPU"| cut -b -20 # Temp da CPU
+     sensors| grep "Sys"| cut -b -20 # Temp do Gabinete
+     [ -f /usr/sbin/hddtemp ] && { # Monitor de temperatura do HD
+     sudo hddtemp $DRIVE| sed "s/Maxtor\ 6E040L0: /   +/g" ; } ;} ;}
+  
+  [ -f /usr/sbin/hddtemp ] && { 
+   alias hdtemp='sudo hddtemp $DRIVE| sed "s/Maxtor\ 6E040L0: /   +/g"' ; }
+      
+#===============================================================================
+# Alias para aplicativos de internet em modo texto      
+#-------------------------------------------------------------------------------    
+  [ -x /usr/bin/w3m ] && { # Compatibilidade maior do w3m com a internet
+   alias w3='w3m -o "user_agent=MSIE 6.0 (Mozilla/4.0 (compatible; MSIE 6.0 Win98))"';}
+   
+  [ ! -z "$BROWSER" ] && { alias html2txt='$BROWSER -dump -image_links' ;}
+     
+#===============================================================================
+# Alias/Funções para o uso do wget
+#-------------------------------------------------------------------------------  
+# Resume das opções:
+#-------------------------------------------------------------------------------  
+# -c  : continuidade
+# -q  : modo quiet (sem output de tela)
+# -nc : não sobrescreve arquivos do mesmo domínio, renomeia se de domínios 
+#       diferentes
+# -r  : baixa um site recursivamente
+# -np : em conjunto com -r, não baixa arquivos de diretórios superiores.
+# -i  : arquivo texto com as urls dos arquivos para baixar
+# -O  : baixa o arquivo final com um nome diferente (necessário especificar 
+#       um nome de arquivo final antes da url)
+# --tries=5 : Tente baixar os arquivos apenas 5 vezes.
+
+# Opções de filtros de arquivos, chamar os tipos entre aspas e separados 
+#  por vírgulas
+# -A  : filtra tipos de arquivos que serão baixados 
+#       (Ex.: ".pdf,.ps,.tar.gz")
+# -R  : filtra tipos de arquivos que NÃO serão baixados 
+#       (Ex.: ".mpeg,.avi,.exe,.cfm")
+#-------------------------------------------------------------------------------  
+
+  alias wg='wget --tries=5 -c'  # Download simples com continuidade
+  alias wl='wget --tries=5 -c -i' # Download a partir de uma lista em texto
+  alias wq='wget --tries=5 -cq' # Modo quite
+  alias wo='wget --tries=5 -cq -O' # Permite especificar nome final do arquivo
+  alias wr='wget --tries=5 -r -c -q -nc -np'    # Download recursivo de tudo
+  alias wa='wget --tries=5 -r -c -q -nc -np -A' # Apenas tipos especificados                            
+  alias wn='wget --tries=5 -r -c -q -nc -np -R' # Tudo menos o indicado ...
+  alias check_wget='ps aux|grep wget' # verifica se existe wget em processo
+  wh() { echo "
+   wg  # Download simples com continuidade
+   wl  # Download a partir de uma lista em texto com continuidade
+   wq' # Modo quite com continuidade
+   wo  # Permite especificar nome final do arquivo
+   wr  # Download recursivo de tudo, com --no-parent ativado
+   wa  # Download recursivo de tipos especificados   ( Ex. wa \".pdf\" )                         
+   wn  # Download recursivo de tudo menos o indicado ( Ex. wn \".exe\" )
+   cw  # verifica se existe wget em processo
+    " ; } # Ajuda para os alias de wget 
+#===============================================================================
+# Alias para pequenos comandos em sed
+#-------------------------------------------------------------------------------
+  alias ed2k-html='sed -i "s/<\/a>/<\/a><BR>/g"' # Formata a saída HTML do *Mule 
+  alias sem-comentarios='sed "/^#/d"' # Deleta linhas que iniciem com # 
+
+#===============================================================================
+# Sistemas operacionais (uso de emuladores)
+#-------------------------------------------------------------------------------
+  [ ! -z "$(lsmod|grep kqemu)" ] && { 
+   alias qemu-create='qemu-img create -f qcow'    # Cria arquivo do qemu
+   alias Kqemu='qemu -cdrom /dev/cdrom -boot c -m 128 -enable-audio' # Chama qemu
+   alias Kqemu.semcd='qemu -boot c -m 128 -enable-audio' # Chama qemu sem CD 
+   } # Criar os alias somente se o módulo do kqemu estiver carregado.   
+
+#=============================================================================== 
+# Alias para inicialização de servicos (usa sudo ou Sudo)
+#-------------------------------------------------------------------------------
+  alias web='[ ! -f /var/run/apache2.pid ] && sudo service apache2 start'
+  alias lssh='[ ! -f /var/run/sshd.pid ] && sudo service ssh start'
+  alias sql='[ ! -f /var/run/mysqld/mysqld.pid ] && sudo service mysql start'
+  alias samba='[ ! -f  /var/run/samba/smbd.pid ] && sudo service samba start'
+
+#===============================================================================
+# Alias para finalização de servicos (usa sudo ou Sudo)
+#-------------------------------------------------------------------------------
+  alias webp='[ -f /var/run/apache2.pid ] && sudo service apache2 stop'
+  alias lsshp='[ -f /var/run/sshd.pid ] && sudo service ssh stop'
+  alias sqlp='[ -f /var/run/mysqld/mysqld.pid ] && sudo service mysql stop'
+  alias sambap='[ ! -f  /var/run/samba/smbd.pid ] && sudo service samba stop'
+
+#=============================================================================== 
+# Máquinas externas (acesso via SSH)
+#-------------------------------------------------------------------------------
+# Configuração das máquinas e usuários:
+#-------------------------------------------------------------------------------
+# Removido da configuração por motivos de segurança, mantido apenas o esqueleto
+# para configuração por outros usuários
+
+   RUSER=mitre  # usuário remoto padrão
+   RHOST=name.dominio.com.br     
+   
+#-------------------------------------------------------------------------------
+# gerar chave de identificação de usuário
+#    ssh-keygen -t rsa
+# copia chave de identificação para máquina remota
+#    ssh-copy-id -i ~/.ssh/id_rsa.pub seu_login@192.168.0.4 
+#-------------------------------------------------------------------------------
+# alias gerar-key='ssh-keygen -t rsa'  # Usar apenas uma vez
+  alias copy-id='ssh-copy-id -i ~/.ssh/id_rsa.pub' # copie para o destino
+  
+#-------------------------------------------------------------------------------
+# alias maquina='ssh -C -l user dominio.destino'
+#  - A opção -C pode ser omitida no caso de estar habilitada acima
+#  - A opção -l pode ser omitida no caso de mesmo usuário
+#-------------------------------------------------------------------------------
+
+  alias ssh='ssh -C'          # Ativando a compactação do SSH 
+  alias scp='scp -r'          # SCP rescursivo
+  alias master="ssh -l $RUSER $RHOST"
+  
+#-------------------------------------------------------------------------------
+# Execução de comandos em máquinas externas  (via SSH)
+# Configuração: 
+# alias maquina.comando='ssh -C -l user dominio.destino "comando.path.completo"'
+#-------------------------------------------------------------------------------
+  
+  alias rhost.ls='ssh -l $RUSER $ZEUS "/bin/ls -Folh"'
+  
+#-------------------------------------------------------------------------------
+# alias para scp: permite efetuar as cópias como se fossem uma simples cópia
+#-------------------------------------------------------------------------------
+  uscprhost(){ scp $1 $RUSER@$RHOST:$2 ;}   
+  dscprhost(){ scp $RUSER@$RHOST:$1 $2 ;}   
+  
+#===============================================================================
+# Montar/Desmontar arquivos iso
+#-------------------------------------------------------------------------------
+  miso(){ [ $# == 1 ] &&  { [ -z "$(grep "$MISO" /etc/mtab)" ] &&  { 
+   mount -t iso9660 -o ro,loop "$1" $MISO; } || { 
+   echo "O diretório $MISO está sendo utilizado como ponto de montagem"
+   echo "$(grep "$MISO" /etc/mtab)"  ;}  ;} || { 
+   echo " Uso : miso arquivo.iso"; } ;} ; alias iso+='miso'
+  alias iso-='[ ! -z "$(grep $MISO /etc/mtab)" ] && { umount $MISO; } || {
+              echo "O despositivo não está montado"  ;} ' # Desmonta iso
+
+#===============================================================================
+# Realizar buscas nos arquivos do diretório corrente para baixo
+#-------------------------------------------------------------------------------
+  # Faz busca por arquivos/diretório/links/devices/*/ simultaneamente
+  procure(){ find ./ | grep -i "$1"; } 
+  # Faz busca por tipos específicos de dados $1 === f ou d ou l ou b ...
+  procuree(){ find ./ -type $1 | grep -i "$2"; }
+  alias procure.f='procuree f '   # Procura por arquivos
+  alias procure.l='procuree l '   # Procura por links
+  alias procure.d='procuree d '   # Procura por diretórios
+  alias procure.b='procuree d '   # Procura por devices ( /dev/* )
+  # modo de analogia ao super-locate
+  # permite todo o arsenal de recursos do grep
+  # o segundo argumento deve ser protegido com " ou '
+  # dica: locate+ emacs "\.png" # lista a combinação de emacs e .png 
+  locadd(){ locate "$1" |grep -i $2 ;} 
+  alias locate+='locadd'
+  
+#===============================================================================
+# Deletar arquivos como root. (encurtando ainda mais o Sudo)
+#-------------------------------------------------------------------------------
+  srm(){ su -c "rm '$*'" $SUSER; }
+  srmr(){ su -c "rm -r '$*'" $SUSER; }
+  srmf(){ su -c "rm -rf '$*'" $SUSER; }
+  
+#=============================================================================== 
+# Movendo arquivos para a lixeira do shell
+#-------------------------------------------------------------------------------
+  lixo(){ [ ! -z "$TRASH" ] && { mv $* $TRASH; } ;}
+  limpalixo(){ [ ! -z "$TRASH" ] && { rm -rf $TRASH/* ; }; }
+  
+#=============================================================================== 
+# Calcula memória realmente utilizada (desconsiderando o cache)
+#-------------------------------------------------------------------------------
+  mem(){ echo "`free|grep Mem|awk '{printf(\"%.0f\",($3-($6+$7))/1000)}'` MiB";}
+  
+#===============================================================================
+# Checar o md5sum de um arquivo
+#-------------------------------------------------------------------------------
+  checksumh(){ echo "Especifique um arquivo com os códigos md5"; }
+  checksum(){ [ $# != 1 ] && checksumh || md5sum -v -c $1; }
+  
+#===============================================================================
+# Criar um arquivo com código md5
+#-------------------------------------------------------------------------------
+  criasum(){ [ $# != 2 ] && { echo "Uso: 
+     criasum aquivo.avaliação arquivo.resultado"; } || { md5sum $1 >>$2 ;};}
+  
+#===============================================================================
+# Converter imagem nrg (Nero) para imagem iso
+#-------------------------------------------------------------------------------
+  nrg2iso(){ [ $# == 2 ] && dd if=$1 of=$2 bs=512 skip=600 ||echo "Erro"; }
+  
+#===============================================================================
+# Função de redirecionamento de toda e qualquer saida de erro
+#-------------------------------------------------------------------------------
+  erro(){ [ $# -gt 0 ] && $* 2>$NULL || echo "Execute algum comando."; }
+  
+#===============================================================================
+# Criar um esqueleto de script
+#------------------------------------------------------------------------------- 
+  bashcreate() {
+  [ $# == 0 ] ||{ echo -e "#!/bin/bash\n#\n# $(extdata)\n#\n">$1;chmod +x $1;};}
+  
+#===============================================================================
+# Mostra uma linha de número específico 
+#-------------------------------------------------------------------------------
+  linha(){ [ -f $2 ] && sed -n -e $1p $2 ||echo "erro"; }
+  
+#===============================================================================
+# Remove arquivos restos de arquivos e pacotes desnecessários (limpeza sádia) 
+#-------------------------------------------------------------------------------
+  purge(){ echo "Removendo pacotes órfãos. Os pacotes podem ser removidos
+  exceto se forem pacotes instalados intencionalmente no sistema. Se não sabe se
+  fez isso, então certamente não fez, logo remova-os com tranquilidade";
+  echo "Digite a senha de $SUSER"; su -c "apt-get remove $(deborphan)" $SUSER; 
+  TMP=$(mktemp /tmp/tmp.XXXXXXXX); echo "Removendo restos de pacotes"
+  dpkg --get-selections | grep "deinstall"| sed -e s/deinstall//g >$TMP
+  sudo dpkg --purge $(cat $TMP) 2>$NULL; rm -f $TMP ; echo "Concluído"; }
+  
+#===============================================================================
+# Criar imagem iso de um diretorio
+#-------------------------------------------------------------------------------
+  ciso(){ [ $# != 2 ] &&  mkisofs --help || { NOMEISO=$2; DIRORIG=$1;
+  mkisofs -V $NOMEISO -l -o ./$NOMEISO $DIRORIG ; }; }
+  
+#===============================================================================
+# Converte multiplos arquivos .ps em pdf
+#-------------------------------------------------------------------------------
+  ps2pdfall(){ for i in "$@"; do ps2pdf "$i"; done; }
+  
+#===============================================================================
+# Funções de compactação e descompactação que aceitam múltiplos arquivos
+#-------------------------------------------------------------------------------
+# Funções para descompactação múltiplas
+#-------------------------------------------------------------------------------
+# Nota existe um pacote chamado unrar, ele é "desnecessário" no sistema, para 
+# evitar conflitos remova o pacote, ou renomeie a função abaixo
+#-------------------------------------------------------------------------------
+  untar(){ for i in "$@"; do tar xvf "$i"; done; }
+  untargz(){ for i in "$@"; do tar zxvf "$i"; done; }
+  untarbz2(){ for i in "$@"; do tar jxvf "$i"; done; }
+  unrar(){ for i in "$@"; do rar x "$i"; done; }  
+  unzipall(){ for i in "$@"; do unzip "$i"; done; }  
+#-------------------------------------------------------------------------------
+# Funções (em forma de alias) para compactação
+#-------------------------------------------------------------------------------
+# Uso geral: nome <arquivofinal.compactado> [arquivos/diretórios de origem] 
+#-------------------------------------------------------------------------------
+  alias tartar="tar cvf"      # compacta formato .tar
+  alias targz="tar zcvf"      # compacta formato .tar.gz
+  alias tarbz2="tar jcvf"     # compacta formato .tar.bz2
+  alias zipe='zip -re'        # Zipa recursivamente com encriptação
+  alias zip='zip -r'          # Zipa recursivamente
+#-------------------------------------------------------------------------------
+# Funções (em forma de alias) para listagem do conteúdo de arquivos compactados
+#-------------------------------------------------------------------------------
+# Uso geral: nome <arquivo.compactado>
+#-------------------------------------------------------------------------------
+  alias tarlist="tar tf"
+  alias targzlist="tar ztf"
+  alias tarbz2list="tar jtf"
+#===============================================================================
+# Leitura de arquivos de sistema
+#------------------------------------------------------------------------------- 
+  shells() { ${PAGER} /etc/shells; }
+  lfstab() { ${PAGER} /etc/fstab; }
+  lxconf() { ${PAGER} /etc/X11/XF86Config-4; }
+  bashrc() { ${PAGER} ~/.bashrc; }
+  prefil() { ${PAGER} /etc/profile; }
+  [ -r /var/log/syslog ] && {  alias log='tail -f -n 150 /var/log/syslog'
+   syslog() {  ${PAGER} /var/log/syslog ; }; } || { 
+   alias log='echo "O arquivo de log não pode ser lido por $USER"' ; }
+  alias searchbash='cat ~/.bashrc| grep -n3' # Faz buscas em ~/.bashrc
+#===============================================================================
+# Script para invocar o Konqueror como gerenciador de arquivos
+#------------------------------------------------------------------------------- 
+# São utilizados os perfis files e extrafiles, esse perfis são pessoais, e devem
+# ser criados ou deve-se editar estes termos no comando
+#------------------------------------------------------------------------------- 
+  kde() { [ $# -eq 1 ] && { kfmclient openProfile files $1 &>$NULL; } || { 
+         kfmclient openProfile extrafiles &>$NULL ; } ; }
+#===============================================================================
+# Funções para manipular a lista de filmes guardada no computador
+#------------------------------------------------------------------------------- 
+# Descrição das funções:
+# filmes    : edita o filme no editor padrão de console
+# filmesK   : edita o filme no editor padrão do X
+# filmesB   : faz uma cópia de backup da lista de filmes
+# filmesN   : mostra os filmes não vistos (marcados com * no começo)
+# filmesL   : faz buscas por palavras/expressões, localiza filmes
+# filmesNum : exibe o número de filmes catalogados
+#-------------------------------------------------------------------------------
+  LISTAFILMES=~/.lista_filmes
+  filmes()  { [ -f $LISTAFILMES ] && $EDITOR $LISTAFILMES ;}
+  filmesK() { [ -f $LISTAFILMES ] && $XEDITOR $LISTAFILMES &>$NULL ;}
+  filmesB() { [ -f $LISTAFILMES ] && cp $LISTAFILMES $LISTAFILMES.bk ;} 
+  filmesN() { [ -f $LISTAFILMES ] && { grep "^\*" $LISTAFILMES; } ;}
+  filmesL() { [ -f $LISTAFILMES ] && { grep $* $LISTAFILMES; } ;}
+  filmesNum() { [ -f $LISTAFILMES ] && { grep "^\*.*0" $LISTAFILMES|wc -l ;}; }
+  filmesH() { echo -ne "
+        filmes    : edita o filme no editor padrão de console
+        filmesK   : edita o filme no editor padrão do X
+        filmesB   : faz uma cópia de backup da lista de filmes
+        filmesN   : mostra os filmes não vistos (marcados com * no começo)
+        filmesL   : faz buscas por palavras/expressões, localiza filmes
+        filmesNum : exibe o número de filmes catalogados\n\n";}
+             
+#===============================================================================
+# Chamar um leitor de PDF padrao
+#-------------------------------------------------------------------------------
+  pdf() { [ ! -z "$PDF"  ] && { $PDF $*;} || echo "Configure o leitor padrão";}
+  
+#===============================================================================
+# Converter o man em ps/pdf
+#-------------------------------------------------------------------------------
+  man2ps() { [ $# != 0 ] && { man -t $1 >$1.ps ;} ;} 
+  man2pdf() { [ $# != 0 ] && { man -t $1 >$1.ps; ps2pdf $1.ps; rm -f $1.ps; } ;} 
+  
+#===============================================================================     
+# Uso mais fácil do Bittorrent
+#-------------------------------------------------------------------------------
+# bittorrentfile : Download de arquivos a partir de um .torrent no computador
+# bittorrenturl  : Download de arquivos a partir de um .torrent de uma url
+# bittorrentdir  : Download de arquivos a partir de .torrent(s) em um diretório  
+#-------------------------------------------------------------------------------
+  bittorrentfile() { btdownloadcurses --responsefile $1 ;}
+  bittorrenturl() { btdownloadcurses --url $1 ;}
+  bittorrentdir() { btlaunchmanycurses $1 ;}
+  bithelp() { echo -ne "
+   bittorrentfile : inicializa um .torrent no computador
+   bittorrenturl  : inicializa um .torrent de uma url
+   bittorrentdir  : inicializa .torrent(s) em um diretório\n\n";}
+  
+#-------------------------------------------------------------------------------
+  
+  
